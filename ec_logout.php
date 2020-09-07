@@ -5,8 +5,8 @@
 *  セッションの仕組み理解を優先しているため、一部処理はModelへ分離していません
 *  また処理はセッション関連の最低限のみ行っており、本来必要な処理も省略しています
 */
-require_once '../include/conf/const.php';
-require_once '../include/model/function.php';
+require_once '../include/conf/ec_const.php';
+require_once '../include/model/ec_function.php';
 // セッション開始
 session_start();
 // セッション名取得 ※デフォルトはPHPSESSID
@@ -34,5 +34,5 @@ if (isset($_COOKIE[$session_name])) {
 // セッションIDを無効化
 session_destroy();
 // ログアウトの処理が完了したらログインページへリダイレクト
-header('Location: http://codecamp.lesson.codecamp.jp/session_sample_top.php');
+header('Location: ec_login.php');
 exit;

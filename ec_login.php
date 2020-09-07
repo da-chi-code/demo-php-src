@@ -34,12 +34,12 @@ if (isset($data[0]['user_id'])) {
     // セッション変数にuser_idを保存
     $_SESSION['user_id'] = $data[0]['user_id'];
     // ログイン済みユーザのホームページへリダイレクト
-    header('Location: http://codecamp.lesson.codecamp.jp/session_sample_home.php');
+    header('Location: ec_home.php');
     exit;
 } else {
     // セッション変数にログインのエラーフラグを保存
     $_SESSION['login_err_flag'] = TRUE;
     // ログインページへリダイレクト
-    header('Location: http://codecamp.lesson.codecamp.jp/session_sample_top.php');
+    header('Location: ec_login.php');
     exit;
 }
