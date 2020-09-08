@@ -81,3 +81,76 @@ $drink_lists = get_drink_list($link);
 $drink_lists = entity_assoc_array($drink_lists);
 close_db_connect($link);
 include_once '../../include/view/view_drink_tool.php';
+
+?>
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>商品一覧ページ</title>
+    <link type="text/css" rel="stylesheet" href="./css/common.css">
+</head>
+
+<body>
+    <header>
+        <div class="header-box">
+            <a href="./top.php">
+                <img class="logo" src="./images/logo.png" alt="CodeSHOP">
+            </a>
+            <a class="nemu" href="./logout.php">ログアウト</a>
+            <a href="./cart.php" class="cart"></a>
+            <p class="nemu">ユーザー名：taikin</p>
+        </div>
+    </header>
+    <div class="content">
+
+        <ul class="item-list">
+            <li>
+                <div class="item">
+                    <form action="./top.php" method="post">
+                        <img class="item-img" src="./img_item/95884a7952ffd2359cb9a771fc977df0.png">
+                        <div class="item-info">
+                            <span class="item-name">ワンピース</span>
+                            <span class="item-price">¥5000</span>
+                        </div>
+                        <input class="cart-btn" type="submit" value="カートに入れる">
+                        <input type="hidden" name="item_id" value="364">
+                        <input type="hidden" name="sql_kind" value="insert_cart">
+                    </form>
+                </div>
+            </li>
+            <li>
+                <div class="item">
+                    <form action="./top.php" method="post">
+                        <img class="item-img" src="./img_item/2c714f196e7b006af7a7aaffb1c598a3.png">
+                        <div class="item-info">
+                            <span class="item-name">Tシャツ</span>
+                            <span class="item-price">¥1000</span>
+                        </div>
+                        <p class="sold-out">売り切れ</p>
+                        <input type="hidden" name="item_id" value="365">
+                        <input type="hidden" name="sql_kind" value="insert_cart">
+                    </form>
+                </div>
+            </li>
+            <li>
+                <div class="item">
+                    <form action="./top.php" method="post">
+                        <img class="item-img" src="./img_item/3674cca1bf9772003336c5e7777f9ee9.png">
+                        <div class="item-info">
+                            <span class="item-name">Yシャツ</span>
+                            <span class="item-price">¥3000</span>
+                        </div>
+                        <input class="cart-btn" type="submit" value="カートに入れる">
+                        <input type="hidden" name="item_id" value="366">
+                        <input type="hidden" name="sql_kind" value="insert_cart">
+                    </form>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+
+</html>
