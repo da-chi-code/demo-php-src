@@ -15,15 +15,18 @@
             <a href="./cart.php" class="cart"></a>
         </div>
     </header>
+<?php if($_SESSION['login_err_flag'] === TRUE){ ?>
+    <p><?php print '登録されていないユーザーです'?></p>
+<?php } ?>
     <div class="content">
         <div class="login">
-            <form method="post" action="./login.php">
+            <form method="post" action="./ec_login.php">
                 <div><input type="text" name="user_name" placeholder="ユーザー名"></div>
                 <div><input type="password" name="password" placeholder="パスワード">
                     <div><input type="submit" value="ログイン">
             </form>
             <div class="account-create">
-                <a href="./register.php">ユーザーの新規作成</a>
+                <a href="./ec_register.php">ユーザーの新規作成</a>
             </div>
         </div>
     </div>
