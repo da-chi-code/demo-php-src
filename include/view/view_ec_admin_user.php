@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang='ja'>
 <head>
-  <meta charset="utf-8">
+  <meta charset='utf-8'>
   <title>ユーザ管理ページ</title>
 </head>
 <body>
@@ -10,8 +10,8 @@
 <?php }?>
   <h1>CodeSHOP 管理ページ</h1>
   <div>
-    <a class="nemu" href="./ec_logout.php">ログアウト</a>
-    <a href="./ec_admin.php">商品管理ページ</a>
+    <a class='nemu' href='./ec_logout.php'>ログアウト</a>
+    <a href='./ec_admin.php'>商品管理ページ</a>
   </div>
   <h2>ユーザ情報一覧</h2>
   <table>

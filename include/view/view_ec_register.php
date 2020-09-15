@@ -15,8 +15,12 @@
             <a href="./cart.php" class="cart"></a>
         </div>
     </header>
-<?php if($don_msgs !== ''){?>
-    <p><?php print $don_msgs ?></p>
+<?php if($message !== ''){?>
+    <p><?php print $message ?></p>
+<?php } ?>
+<?php //エラーメッセージ表示
+foreach ($err_msgs as $err_msg) { ?>
+        <p><?php print $err_msg;?></p>
 <?php } ?>
     <div class="content">
         <div class="register">

@@ -1,34 +1,5 @@
 <?php
 /**
-* insertを実行する
-*
-* @param obj $link DBハンドル
-* @param str SQL文
-* @return bool
-*/
-function insert_db($link, $sql) {
-   // クエリを実行する
-   if (mysqli_query($link, $sql) === TRUE) {
-       return TRUE;
-   } else {
-       return FALSE;
-   }
-}
-/**
-* 新規商品を追加する
-*
-* @param obj $link DBハンドル
-* @param str $goods_name 商品名
-* @param int $price 価格
-* @return bool
-*/
-function insert_goods_table($link, $goods_name, $price) {
-   // SQL生成
-   $sql = 'INSERT INTO goods_table(goods_name, price) VALUES(\'' . $goods_name . '\', ' . $price . ')';
-   // クエリ実行
-   return insert_db($link, $sql);
-}
-/**
 * リクエストメソッドを取得
 * @return str GET/POST/PUTなど
 */
@@ -60,33 +31,33 @@ function get_db_connect() {
  
     return $link;
 }
-function admin_check($name, $pass){
-    if($name === 'admin' && $pass === 'admin'){
-        redirect_admin();
+function admin_check($str, $key){
+    if($str === 'admin' && $key === 'admin'){
+        $_SESSION['user_id'] = $str;
+        redirect_admin();    
     }
 }
 function redirect_admin(){
-    header('Location: /home/ec2-user/environment/htdocs/ec_admin.php');
+    header('Location: ./ec_admin.php');
     exit;
 }
-function check_login_user($link){
-    $sql = 'SELECT user_id FROM user
-        WHERE user_name =\'' . $user_name . '\' AND password =\'' . $passwd . '\'';
+function check_login_user($link,$str,$key){
+    $sql = 'SELECT id FROM user WHERE user_name =\'' . $str . '\' AND password =\'' . $key . '\'';
     return get_as_array($link, $sql);
 }
 function redirect_login(){
-    header('Location: /home/ec2-user/environment/htdocs/ec_login.php');
+    header('Location: ./ec_login.php');
     exit;
 }
 function redirect_home(){
-    header('Location: /home/ec2-user/environment/htdocs/ec_home.php');
+    header('Location: ./ec_home.php');
     exit;
 }
 function get_as_array($link, $sql) {
  
     // 返却用配列
     $data = [];
-    $error = '';
+    $err = '';
     // クエリを実行する
     if ($result = mysqli_query($link, $sql)) {
  
@@ -105,8 +76,8 @@ function get_as_array($link, $sql) {
  
     }
     else{
-        $error = 'sql実行失敗'.$sql;
-        return $error;
+        $err = 'sql実行失敗'.$sql;
+        return $err;
     }
  
 }
@@ -125,50 +96,45 @@ function settion_delete($key){
         $session_name,
         '',
         time() - 42000,
-        $params["path"],
-        $params["domain"],
-        $params["secure"],
-        $params["httponly"]
+        $params['path'],
+        $params['domain'],
+        $params['secure'],
+        $params['httponly']
     );
     }
 }
 function validation_user($param){
-    $error = [];
-    if(isset($param['user_name'])){
-        $error = check_user_name($param['user_name']);
-    }
-    if(isset($param['password'])){
-        $error = check_password($param['password']);
-    }
-    return $error;
+    $err = [];
+    $err[] = check_user_name($param['user_name']);
+    $err[] = check_password($param['password']);
+    return $err;
 }
 function check_user_name($param){
-    $error = '';
-    if(preg_match('/^([a-zA-Z0-9]{6,})$/', $param) !== TRUE){
-        $error = 'ユーザー名は半角英数字６文字以上で入力してください';   
+    if(preg_match('/^([a-zA-Z0-9]{6,})$/',$param) !== 1){
+        $err = 'ユーザー名は半角英数字６文字以上で入力してください';
+        return $err;
     }
 }
 function check_password($param){
-    $error = '';
-    if(preg_match('/^([a-zA-Z0-9]{6,})$/', $param) !== TRUE){
-        $error = 'パスワードは半角英数字６文字以上で入力してください';    
+    if(preg_match('/^([a-zA-Z0-9]{6,})$/',$param) !== 1){
+        $err = 'パスワードは半角英数字６文字以上で入力してください';
+        return $err;
     }
 }
 function regist_user($link,$key,$param){
-    $error = '';
-    $date = $date = date('-y-m-d H:i:s');
-    $sql = 'INSERT INTO user (user_name,password,created_at) VALUES (\''.$key.',\''.$param.'\','.$date.'\')';
-    if(mysqli_query($link, $sql) === false){
-        $error = 'ドリンクリストに追加できませんでした';
-    };
-    return $error;
+    $date = date('y-m-d H:i:s');
+    $sql = 'INSERT INTO user (user_name,password,created_at) VALUES (\''.$key.'\',\''.$param.'\',\''.$date.'\')';
+    if(mysqli_query($link, $sql) === FALSE){
+        $err = 'ユーザーリストに追加できませんでした';
+        return $err;
+    }
 }
 function get_user_list($key){
     $sql = 'SELECT user_name,password,created_at FROM user';
     // クエリ実行
     return get_as_array($key, $sql);
 }
-
+//admin.php
 function get_file_name_data($key) {
     $str = '';
     if (isset($_FILE[$key]) === TRUE) {
@@ -183,140 +149,110 @@ function get_file_tmp_name_data($key) {
     }
     return $str;
 }
-function check_name($param){
-    $err = '';
-    if (empty(trim(mb_convert_kana($param, 's', 'UTF-8'))) === TRUE) {
+function validation_item($param){
+    $err = [];
+    if(isset($param['name'])){
+        $err[] = check_item_name($param['name']);
+    }
+    if(isset($param['price'])){
+        $err[] = check_int($param['price']);
+    }
+    if(isset($param['stock'])){
+        $err[] = check_int($param['stock']);
+    }
+    if(isset($param['status'])){
+        $err[] = check_status($param['status']);
+    }
+    if(isset($param['img'])){
+        $err[] = check_img($param['img']);
+    }
+    return $err;
+}
+function check_item_name($param){
+    if (preg_match('/\s*$/', $param) !== 1){
         $err = '名前が未入力または空白のみが入力されています';
+        return $err;
     }
-    return $err;
 }
-function check_price($param){
-    $err = '';
-    if(strlen($param) <> mb_strlen($param)){
-        $param = mb_convert_kana($_POST[$param],'n');
-        if(ctype_digit($param)){
-            $param = intval($param);
-        }
-    }
-    else{
-        if(ctype_digit($param)){
-            $param = intval($param);
-        }
-    }
-    if (empty($param) === TRUE && $param !== 0) {
-        $err = '値段が未入力です';
-    }
-    elseif(is_int($param) === false || $param < 0){
+function check_int($param){
+   if (preg_match('/^([1-9][0-9]*|0)$/', $param) !== 1){
         $err = '値段は０以上の整数で入力してください';
+        return $err;
     }
-    return $err;
-}
-function check_stock($param){
-    $err = '';
-    if(strlen($param) <> mb_strlen($param)){
-        $param = mb_convert_kana($_POST[$param],'n');
-        if(ctype_digit($param)){
-            $param = intval($param);
-        }
-    }
-    else{
-        if(ctype_digit($param)){
-            $param = intval($param);
-        }
-    }
-    if (empty($param) === TRUE && $param !== 0) {
-        $err = '在庫が未入力です';
-    }
-    elseif(is_int($param) === false || $param < 0){
-        $err = '在庫は０以上の整数で入力してください';
-    }
-    return $err;
-}
-function check_img($param){
-    $err = '';
-    if (empty($param) === TRUE) {
-        $err = '商品画像が未入力です';
-        }
-    elseif(pathinfo($param,PATHINFO_EXTENSION) !== 'jpg'){
-        if(pathinfo($param,PATHINFO_EXTENSION) !== 'png'){
-            if(pathinfo($param,PATHINFO_EXTENSION) !== 'jpeg'){
-                $err = '画像形式はJPEGまたはPNGで入力してください';
-            }
-        }
-    }
-    return $err;
 }
 function check_status($param){
-    $err = '';
     if($param !== '0'){
         if($param !== '1'){
             $err = 'ステータスは公開または非公開を入力してください';
+            return $err;
         }
     }
-    return $err;
 }
-function upload_drink($link,$date,$new_name,$new_price,$new_status,$new_img,$save_file){
+function check_img($param){
+    if(preg_match('/[^\s]+(\.(jpg|jpeg|png))$/',$param) !== 1){
+        $err = '拡張子はJPEGまたはPNG形式で入力してください';
+        return $err;
+    }
+}
+function file_name(){
+    $str = uniqid(rand());
+    return $str;
+}
+function upload_item($link,$param){
     $err = [];
-    $message = '';
     mysqli_autocommit($link, false);
-    $sql = 'INSERT INTO drink_list(drink_name,price,create_at,status,display) VALUES(\''.$new_name.'\',\''.$new_price.'\',\''.$date.'\',\''.$new_status.'\',\''.$new_img.'\')';
+    $sql = 'INSERT INTO item(name,price,img,status,create_at,status) VALUES(\''.$param['name'].'\',\''.$param['price'].'\',\''.$param['img'].'\',\''.$date.'\',\''.$param['status'].'\')';
     if(mysqli_query($link, $sql) === false){
         $err[]='ドリンクリストに追加できませんでした';
     }
-    $drink_id = mysqli_insert_id($link);
-    $sql = 'INSERT INTO inventory_table(drink_id,stock,create_at) VALUES(\''.$drink_id.'\',\''.$new_stock.'\',\''.$date.'\')';
+    $item_id = mysqli_insert_id($link);
+    $sql = 'INSERT INTO stock(drink_id,stock,create_at) VALUES(\''.$item_id.'\',\''.$param['stock'].'\',\''.$date.'\')';
     if(mysqli_query($link, $sql) === false){
         $err[]='在庫データを追加できませんでした';
     }
     //画像保存処理
-    if(is_uploaded_file($save_file)){
-        move_uploaded_file($save_file, './image/'.str_replace(' ','',str_replace('-','',str_replace(':','',$date))).$_FILES[$new_img]['name']);
+    if(is_uploaded_file($param['tmp_name'])){
+        move_uploaded_file($param['tmp_name'], './image/'.$param['img']);
     }
     if (count($err) === 0) {
         // 処理確定
         mysqli_commit($link);
-        $message = '商品追加が完了しました';
-        return $message;
     }
     else{
     // 処理取消
         mysqli_rollback($link);
+        return $err;
     }
 }
-function update_stock($link,$date,$update_stock,$update_drink_id){
+function update_stock($link,$key,$param){
+    $err = '';
+    $date = $date = date('y-m-d H:i:s');
     $message = '';
-    $sql = 'UPDATE inventory_table SET stock =\''.$update_stock.'\',update_at= \''.$date.'\'WHERE drink_id =\''.$update_drink_id.'\'';
-    if(mysqli_query($link, $sql) !== false){
-        $message='在庫が更新されました';
-        return $message;
-    }
-    else{
-        die('在庫を更新できませんでした');
+    $sql = 'UPDATE stock SET stock =\''.$param['stock'].'\',update_at= \''.$date.'\'WHERE item_id =\''.$key.'\'';
+    if(mysqli_query($link, $sql) === FALSE){
+        $err = '在庫が更新できませんでした';
+        return $err;
     }
 }
-function update_status($link,$date,$change_status,$update_drink_id){
+function update_status($link,$key,$param){
+    $date = date('y-m-d H:i:s');
     $message = '';
-    $sql = 'UPDATE drink_list SET status =\''.$change_status.'\',update_at=\''.$date.'\'WHERE drink_id =\''.$update_drink_id.'\'';
-    if(mysqli_query($link, $sql) !== false){
-        $message='公開ステータスが更新されました';
-        return $message;
-    }
-    else{
-        die('公開ステータスを更新できませんでした');
+    $sql = 'UPDATE item SET status =\''.$param['status'].'\',update_at=\''.$date.'\'WHERE id =\''.$key.'\'';
+    if(mysqli_query($link, $sql) === FALSE){
+        $err = 'ステータスが更新できませんでした';
+        return $err;
     }
 }
-function get_drink_list($link) {
+function delete_item($link,$key){
+    $sql = 'delete FROM item WHERE id =\''.$key.'\'';
+    if(mysqli_query($link, $sql) === FALSE){
+        $err = '商品を削除できませんでした';
+        return $err;
+    }
+}
+function get_item_list($link) {
     // SQL生成
-    $sql = 'SELECT drink_list.drink_id,drink_list.drink_name,drink_list.price,drink_list.create_at,drink_list.status,drink_list.display,inventory_table.stock FROM drink_list LEFT JOIN inventory_table ON inventory_table.drink_id = drink_list.drink_id';
+    $sql = 'SELECT item.id,item.name,item.price,item.img,item.status,stock.stock FROM item LEFT JOIN stock ON stock.item_id = item.id';
     // クエリ実行
     return get_as_array($link, $sql);
-} 
-function entity_assoc_array($assoc_array) {
-    foreach ($assoc_array as $key => $value) {
-        foreach ($value as $keys => $values) {
-            // 特殊文字をHTMLエンティティに変換
-            $assoc_array[$key][$keys] = entity_str($values);
-        }
-    }
-    return $assoc_array;
 }

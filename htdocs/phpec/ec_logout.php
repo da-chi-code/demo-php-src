@@ -1,10 +1,10 @@
 <?php
 //ログアウト処理
-require_once '../include/conf/ec_const.php';
-require_once '../include/model/ec_function.php';
+require_once '../../include/conf/ec_const.php';
+require_once '../../include/model/ec_function.php';
 // セッション開始
 session_start();
-// セッション名取得 ※デフォルトはPHPSESSID
+//セッション名取得
 $session_name = session_name();
 // セッション変数を全て削除
 $_SESSION = [];

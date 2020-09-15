@@ -15,9 +15,9 @@
             <a href="./cart.php" class="cart"></a>
         </div>
     </header>
-<?php if($_SESSION['login_err_flag'] === TRUE){ ?>
-    <p><?php print '登録されていないユーザーです'?></p>
-<?php } ?>
+    <?php foreach ($err_msgs as $err_msg) { ?>
+            <p><?php print $err_msg;?></p>
+    <?php } ?>
     <div class="content">
         <div class="login">
             <form method="post" action="./ec_login.php">
