@@ -1,4 +1,4 @@
 <?php
 print 'hello world!';
 
-print $error;
+print jijijijiji;
