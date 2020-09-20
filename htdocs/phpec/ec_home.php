@@ -23,6 +23,7 @@ $link = get_db_connect();
 $sql = 'SELECT user_name FROM user_table WHERE user_id = ' . $user_id;
 // SQL実行し登録データを配列で取得
 $data = get_as_array($link, $sql);
+
 // データベース切断
 close_db_connect($link);
 // ユーザ名を取得できたか確認
