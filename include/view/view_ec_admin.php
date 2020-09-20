@@ -22,12 +22,12 @@
     <?php } ?>
     <h2>商品の登録</h2>
     <form method="post" enctype="multipart/form-data">
-      <div><label>商品名: <input type="text" name="new_name" value=""></label></div>
-      <div><label>値　段: <input type="text" name="new_price" value=""></label></div>
-      <div><label>個　数: <input type="text" name="new_stock" value=""></label></div>
-      <div><label>商品画像:<input type="file" name="new_img"></label></div>
+      <div><label>商品名: <input type="text" name="name" value=""></label></div>
+      <div><label>値　段: <input type="text" name="price" value=""></label></div>
+      <div><label>個　数: <input type="text" name="stock" value=""></label></div>
+      <div><label>商品画像:<input type="file" name="img"></label></div>
       <div><label>ステータス:
-        <select name="new_status">
+        <select name="status">
           <option value="0">非公開</option>
           <option value="1" selected>公開</option>
         </select>
@@ -51,22 +51,22 @@
 <?php foreach ($item_lists as $item_list) { ?>
       <tr>
         <form method="post">
-          <td><img class="img_size" src=<?php print './image/'.$param['img']?>></td>
+          <td><img class="img_size" src=<?php print './image/'.$item_list['img']?>></td>
           <td class="name_width"><?php print h($item_list['name'])?></td>
           <td class="text_align_right"><?php print h($item_list['price'])?></td>
-          <td><input type="text"  class="input_text_width text_align_right" name="update_stock" value=<?php print $item_list['stock'];?>>個&nbsp;&nbsp;<input type="submit" value="変更する"></td>
-          <input type="hidden" name="item_id" value=<?php print h($item_list['id'])?>>
+          <td><input type="text"  class="input_text_width text_align_right" name="stock" value=<?php print $item_list['stock'];?>>個&nbsp;&nbsp;<input type="submit" value="変更する"></td>
+          <input type="hidden" name="id" value=<?php print h($item_list['id'])?>>
           <input type="hidden" name="sql_kind" value="update">
         </form>
         <form method="post">
           <td><input type="submit" value=<?php if($item_list['status'] === '0'){print'非公開→公開';}else{print'公開→非公開';}?>></td>
-          <input type="hidden" name="change_status" value=<?php if($item_list['status'] === '0'){print '1';}else{print '0';}?>>
-          <input type="hidden" name="item_id" value=<?php print $item_list['id']?>>
+          <input type="hidden" name="status" value=<?php if($item_list['status'] === '0'){print '1';}else{print '0';}?>>
+          <input type="hidden" name="id" value=<?php print $item_list['id']?>>
           <input type="hidden" name="sql_kind" value='change'>
         </form>
         <form method="post">
           <td><input type="submit" value="削除する"></td>
-          <input type="hidden" name="item_id" value= <?php print $item_list['id']?>>
+          <input type="hidden" name="id" value= <?php print $item_list['id']?>>
           <input type="hidden" name="sql_kind" value="delete">
         </form>
       </tr>
