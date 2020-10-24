@@ -9,7 +9,7 @@ if(!isset($_SESSION['user_id'])){
     redirect_login();
 }
 if(isset($_SESSION['user_id'])){
-    if($_SESSION['user_id'] !== 'admin'){
+    if($_COOKIE['user_name'] !== 'admin'){
         redirect_home();
     }
 }

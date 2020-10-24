@@ -1,6 +1,4 @@
 <?php
-//$user_name = '';
-//$passwd = '';
 $err_msgs = [];
 $message = '';
 //読みこみ
@@ -11,17 +9,16 @@ require_once '../../include/model/model_user.php';
 session_start();
 $_SESSION['err_msgs'] = [];
 if (get_request_method() === 'POST') {
-    // POST値取得
-    /*$user_name  = get_post_data('user_name');  // メールアドレス
-    $passwd = get_post_data('password'); // パスワード*/
     // データベース接続
     $link = get_db_connect();
+    //ユーザー名とパスワードの前後空白削除
+    $data = trim_param($_POST);
     // ユーザー名とパスワードのバリデーション
-    validation_user($_POST);
-    check_user($link,$_POST);
+    validation_user($data);
+    check_user($link,$data);
     //エラーがなければDB追加処理
     if(count($_SESSION['err_msgs']) === 0){
-            regist_user($link,$_POST);
+            regist_user($link,$data);
         if(count($_SESSION['err_msgs']) === 0){
             $message = 'ユーザー登録が完了しました';
         }

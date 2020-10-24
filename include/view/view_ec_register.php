@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="utf-8">
     <title>ユーザ登録ページ</title>
+    <link type="text/css" rel="stylesheet" href="./css/common.css">
 </head>
 
 <body>
     <header>
         <div class="header-box">
-            <a href="./top.php">
+            <a href="./ec_top.php">
                 <img class="logo" src="./images/logo.png" alt="CodeSHOP">
             </a>
-            <a href="./cart.php" class="cart"></a>
+            <a href="./ec_cart.php" class="cart"></a>
         </div>
     </header>
 <?php if($message !== ''){?>

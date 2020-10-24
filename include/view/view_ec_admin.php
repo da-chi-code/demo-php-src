@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>商品管理ページ</title>
-  <!--<link type="text/css" rel="stylesheet" href="./css/admin.css">-->
+  <link type="text/css" rel="stylesheet" href="./css/admin.css">
 </head>
 <body>
   <h1>CodeSHOP 管理ページ</h1>
@@ -28,6 +28,7 @@
       <div><label>商品画像:<input type="file" name="img"></label></div>
       <div><label>ステータス:
         <select name="status">
+          <option value="" selected>選択してください</option>
           <option value="0">非公開</option>
           <option value="1" selected>公開</option>
         </select>

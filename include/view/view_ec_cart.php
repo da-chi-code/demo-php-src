@@ -13,9 +13,12 @@
       </a>
       <a class="nemu" href="./ec_logout.php">ログアウト</a>
       <a href="./ec_cart.php" class="cart"></a>
-      <p class="nemu">ユーザー名：taikin</p>
+      <p class="nemu">ユーザー名：<?php print $_COOKIE['user_name'] ?></p>
     </div>
   </header>
+<?php if($message !== ''){?>
+    <p class = "success-msg"><?php print $message ?></p>
+<?php } ?>
 <?php foreach ($err_msgs as $err_msg) { ?>
     <p><?php print $err_msg;?></p>
 <?php } ?>
@@ -27,17 +30,17 @@
       <span class="cart-list-num">数量</span>
     </div>
     <ul class="cart-list">
-<?php foreach ($cart_lists as $cart_list) { //下のmin form id について確認?>
+<?php foreach ($cart_lists as $cart_list) { ?>
       <li>
         <div class="cart-item">
-          <img class="img" src=<?php print './image/'.$item_list['img']?>>
-          <span class="name"><?php print h($item_list['name'])?></span>
+            <img class="cart-item-img" src=<?php print './image/'.$cart_list['img']?>>
+          <span class="cart-item-name"><?php print h($cart_list['name'])?></span>
           <form class="cart-item-del" action="./ec_cart.php" method="post">
             <input type="submit" value="削除">
-            <input type="hidden" name="id" value=<?php print h($item_list['id'])?>>
+            <input type="hidden" name="id" value=<?php print h($cart_list['id'])?>>
             <input type="hidden" name="sql_kind" value="delete_cart">
           </form>
-          <span class="price"><?php print h($item_list['price'])?></span>
+          <span class="cart-item-price">¥ <?php print h($cart_list['price'])?></span>
           <form class="form_select_amount" id="form_select_amount372" action="./ec_cart.php" method="post">
             <input type="text" class="cart-item-num2" min="0" name="amount" value=<?php print $cart_list['amount'];?>>個&nbsp;<input type="submit" value="変更する">
             <input type="hidden" name="id" value=<?php print h($cart_list['id'])?>>
@@ -52,9 +55,13 @@
       <span class="buy-sum-price"><?php print $sum ?>円</span>
     </div>
     <div>
+    <?php if(count($cart_lists) === 0){ ?>
+      <p class="buy-btn">カートに商品がありません</p>
+    <?php } else{ ?>
       <form action="./ec_result.php" method="post">
         <input class="buy-btn" type="submit" value="購入する">
       </form>
+    <?php } ?>
     </div>
   </div>
 </body>
