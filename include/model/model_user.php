@@ -1,25 +1,38 @@
 <?php
-function admin_check($param){
+function login_check($param){
     if($param['user_name'] === 'admin' && $param['password'] === 'admin'){
-        $_SESSION['user_id'] = $param['user_name'];
         redirect_admin();    
+    }
+    else{
+        redirect_home();
     }
 }
 function check_login_user($link,$param){
     $sql = 'SELECT id FROM user WHERE user_name =\'' . $param['user_name'] . '\' AND password =\'' . $param['password'] . '\'';
     return get_as_array($link, $sql);
 }
+function trim_param($param){
+    $param['user_name'] = trim($param['user_name']);
+    $param['password'] = trim($param['password']);
+    return $param;
+}
 function validation_user($param){
     check_user_name($param['user_name']);
     check_password($param['password']);
 }
 function check_user_name($param){
-    if(preg_match('/^([a-zA-Z0-9]{6,})$/',$param) !== 1){
+    if (preg_match('/^\s*$/u', $param) === 1){
+        $_SESSION['err_msgs'][] = 'ユーザーネームが未入力または空白のみが入力されています';
+    }
+    elseif(preg_match('/^([a-zA-Z0-9]{6,})$/',$param) !== 1 && $param !== 'admin'){
         $_SESSION['err_msgs'][] = 'ユーザー名は半角英数字６文字以上で入力してください';
     }
 }
 function check_password($param){
-    if(preg_match('/^([a-zA-Z0-9]{6,})$/',$param) !== 1){
+    if (preg_match('/^\s*$/u', $param) === 1){
+        $_SESSION['err_msgs'][] = 'パスワードが未入力または空白のみが入力されています';
+    }
+    elseif(preg_match('/^([a-zA-Z0-9]{6,})$/',$param) !== 1 && $param !== 'admin'){
         $_SESSION['err_msgs'][] = 'パスワードは半角英数字６文字以上で入力してください';
     }
 }

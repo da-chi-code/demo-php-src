@@ -6,6 +6,7 @@ require_once '../../include/model/ec_function.php';
 require_once '../../include/model/model_item.php';
 require_once '../../include/model/model_cart.php';
 //変数定義
+$message = '';
 //リダイレクト、管理者でなければホームページ、その他はログインページへ
 session_start();
 $_SESSION['err_msgs'] = [];
@@ -17,6 +18,9 @@ $request_method = get_request_method();
 if($request_method === 'POST'){
     if($_POST['sql_kind'] === 'insert_cart'){
         add_cart($link,$_POST);
+        if(count($_SESSION['err_msgs']) === 0){
+            $message = 'カートに登録しました';
+        }
     }
 }
 $item_lists = get_item_list_open($link);

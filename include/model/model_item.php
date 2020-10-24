@@ -19,7 +19,7 @@ function validation_img($file){
     }    
 }
 function check_item_name($param){
-    if (preg_match('/\s*$/', $param) !== 1){
+    if (preg_match('/^\s*$/u', $param) === 1){
         $_SESSION['err_msgs'][] = '名前が未入力または空白のみが入力されています';
     }
 }
@@ -51,7 +51,7 @@ function file_name(){
 }
 function upload_item($link,$param,$file){
     mysqli_autocommit($link, false);
-    $sql = 'INSERT INTO item(name,price,img,status,created_at) VALUES(\''.$param['name'].'\',\''.$param['price'].'\',\''.$param['img'].'\',\''.$param['status'].'\',\''.date('y-m-d H:i:s').'\')';
+    $sql = 'INSERT INTO item(name,price,img,status,created_at) VALUES(\''.$param['name'].'\',\''.$param['price'].'\',\''.$file['img']['name'].'\',\''.$param['status'].'\',\''.date('y-m-d H:i:s').'\')';
     if(mysqli_query($link, $sql) === false){
         $_SESSION['err_msgs'][] ='ドリンクリストに追加できませんでした';
     }
@@ -60,13 +60,13 @@ function upload_item($link,$param,$file){
     if(mysqli_query($link, $sql) === false){
         $_SESSION['err_msgs'][] ='在庫データを追加できませんでした';
     }
-    if(is_uploaded_file($file['tmp_name'])){
-        move_uploaded_file($file['tmp_name'], './image/'.$file['img']);
+    if(is_uploaded_file($file['img']['tmp_name'])){
+        move_uploaded_file($file['img']['tmp_name'], './image/'.$file['img']['name']);
     }
     transaction($link);
 }
-function update_stock($link,$key,$param){
-    $sql = 'UPDATE stock SET stock =\''.$param['stock'].'\',updated_at= \''.date('y-m-d H:i:s').'\'WHERE item_id =\''.$key.'\'';
+function update_stock($link,$param){
+    $sql = 'UPDATE stock SET stock =\''.$param['stock'].'\',updated_at= \''.date('y-m-d H:i:s').'\'WHERE item_id =\''.$param['id'].'\'';
     if(mysqli_query($link, $sql) === FALSE){
         $_SESSION['err_msgs'][] = '在庫が更新できませんでした';
     }
@@ -79,13 +79,17 @@ function update_status($link,$param){
 }
 function delete_item($link,$key){
     mysqli_autocommit($link, false);
-    $sql = 'delete FROM item WHERE id =\''.$key['id'].'\'';
+    $sql = 'delete FROM cart WHERE item_id =\''.$key['id'].'\'';
     if(mysqli_query($link, $sql) === FALSE){
-        $_SESSION['err_msgs'][] = '商品を削除できませんでした';
+        $_SESSION['err_msgs'][] = 'カートの商品を削除できませんでした';
     }
     $sql = 'delete FROM stock WHERE item_id =\''.$key['id'].'\'';
     if(mysqli_query($link, $sql) === FALSE){
         $_SESSION['err_msgs'][] = '商品の在庫を削除できませんでした';
+    }
+    $sql = 'delete FROM item WHERE id =\''.$key['id'].'\'';
+    if(mysqli_query($link, $sql) === FALSE){
+        $_SESSION['err_msgs'][] = '商品を削除できませんでした';
     }
     transaction($link);
 }
@@ -95,6 +99,10 @@ function get_item_list($link) {
 }
 function get_item_list_open($link) {
     $sql = 'SELECT item.id,item.name,item.price,item.img,item.status,stock.stock FROM item LEFT JOIN stock ON stock.item_id = item.id WHERE status = \'1\'';
+    return get_as_array($link, $sql);
+}
+function get_item_list_cart($link,$param){
+    $sql = 'SELECT item.id,item.name,item.price,item.img,item.status,stock.stock FROM item LEFT JOIN stock ON stock.item_id = item.id WHERE item.id = \''.$param['id'].'\'';
     return get_as_array($link, $sql);
 }
 function change_stock($link,$param,$key){

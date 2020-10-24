@@ -3,6 +3,7 @@
 <head>
   <meta charset='utf-8'>
   <title>ユーザ管理ページ</title>
+  <link type="text/css" rel="stylesheet" href="./css/admin.css">
 </head>
 <body>
 <?php foreach ($err_msgs as $err_msg) { ?>
