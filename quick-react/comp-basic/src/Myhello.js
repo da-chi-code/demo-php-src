@@ -1,5 +1,6 @@
 
 import './App.css';
+import PropTypes from 'prop-types';
 
 function Myhello(props) {
   return (
@@ -22,7 +23,8 @@ function Myhello(props) {
        </a>
      </header>
    </div> */
-  );
+  )
 }
+Myhello.propTypes = { name: PropTypes.string.isRequired };
 
 export default Myhello;

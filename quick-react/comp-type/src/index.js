@@ -1,13 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import Mytype from './Mytype';
 import reportWebVitals from './reportWebVitals';
+import Mytype, { Member } from './Mytype';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <div>
+    <Mytype value='山田' />
+    <Mytype value={ '鈴木' } />
+    <Mytype value={ 108 } />
+    <Mytype value={ true } />
+    <Mytype value={ 'うめ', '桃', '桜' } />
+    <Mytype value={ { NAME: "山田太郎", AGE: 40 } } />
+    <Mytype value={ () => console.log('Hoge') } />
+  </div>,
   document.getElementById('root')
 );
 
