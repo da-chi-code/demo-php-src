@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>タイマー</title>
+    <link rel="stylesheet" href="roulette.css">
+    <script src="jquery-3.5.1.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <table id="roulette">
+            <caption>ルーレット</caption>
+        </table>
+        <p>
+            <button id="start">スタート</button>
+            <button id="stop">ストップ</button>
+            <button id="reset">リセット</button>
+        </p>
+    </div>
+    <script>
+        var max = 16;
+        var indention = 4;
+        var roulette_array;
+        var array_length;
+        var array_index;
+        var interval_id;
+        $(
+            function () {
+                for (var i = 1; i - 1 < max / indention; i++) {
+                    $('#roulette').append('<tr>');
+                    for (var j = 1; j < indention + 1; j++) {
+                        var roulette_figure = j + (indention * (i - 1));
+                        $('tr:last-child').append('<td>' + roulette_figure + '</td>');
+                    }
+                }
+                var table_max = $('td:last').text();
+                if (table_max > max) {
+                    for (var k = 1; k < table_max - max + 1; k++) {
+                        $('td').eq(table_max - k).remove();
+                    }
+                }
+                $('td').width(24);
+                roulette_array = $('#roulette tr td').get();
+                array_length = roulette_array.length;
+                $('#start').click(start_roulette);
+                $('#stop').click(stop_roulette);
+                $('#reset').click(reset_roulette);
+                $('#stop').prop('disabled', true);
+                $('#reset').prop('disabled', true);
+            }
+        );
+        function start_roulette() {
+            $('#start').prop('disabled', true);
+            $('#stop').prop('disabled', false);
+            $('#reset').prop('disabled', false);
+            interval_id = setInterval(random_roulette, 300);
+        }
+        function random_roulette() {
+            $.each(roulette_array, function (index, value) {
+                roulette_array[index].style.backgroundColor = ('');
+            });
+            array_index = Math.floor(Math.random() * array_length);
+            roulette_array[array_index].style.backgroundColor = 'yellow';
+        }
+        function stop_roulette() {
+            $('#start').prop('disabled', false);
+            $('#stop').prop('disabled', true);
+            clearInterval(interval_id);
+            roulette_array[array_index].style.opacity = 0.3;
+            roulette_array.splice(array_index, 1);
+            array_length = roulette_array.length;
+            if (array_length === 0) {
+                $('#start').prop('disabled', true);
+            }
+        }
+        function reset_roulette() {
+            $('#start').prop('disabled', false);
+            $('#stop').prop('disabled', true);
+            $('#reset').prop('disabled', true);
+            clearInterval(interval_id);
+            roulette_array = $('#roulette tr td').get();
+            array_length = roulette_array.length;
+            $('td').css({ 'background-color': '', 'opacity': '1' });
+        }
+    </script>
+</body>
+
+</html>
